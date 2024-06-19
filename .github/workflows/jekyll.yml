@@ -2,9 +2,11 @@ name: Jekyll site CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,11 +14,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Set up Ruby
+
+    - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.0.0'  # make sure this matches your local Ruby version
+        ruby-version: '3.0.0'  # This matches your local Ruby environment
 
     - name: Install dependencies
       run: |
@@ -25,10 +27,10 @@ jobs:
 
     - name: Build and test
       run: |
-        bundle exec jekyll build
-        bundle exec jekyll serve & sleep 10; kill $!
+        bundle exec jekyll build --trace
 
     - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
